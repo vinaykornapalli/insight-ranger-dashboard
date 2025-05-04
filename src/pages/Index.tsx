@@ -6,16 +6,18 @@ import ChunkQualityChart from "@/components/ChunkQualityChart";
 import ChunkTable from "@/components/ChunkTable";
 import ActionableInsights from "@/components/ActionableInsights";
 import MetricHistogram from "@/components/MetricHistogram";
+import ChunkSizeHistogram from "@/components/ChunkSizeHistogram";
 import { fetchBots, fetchBotMetrics } from "@/services/api";
 import { ChunkDocument, BotMetrics } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
   const [selectedBot, setSelectedBot] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedChunk, setSelectedChunk] = useState<ChunkDocument | null>(null);
   const [botMetrics, setBotMetrics] = useState<BotMetrics | null>(null);
+  const [chunkSizeData, setChunkSizeData] = useState<{ size: number; count: number }[]>([]);
   
   // Initialize with the first available bot
   useEffect(() => {
@@ -41,6 +43,21 @@ const Index = () => {
       try {
         const metrics = await fetchBotMetrics(selectedBot);
         setBotMetrics(metrics);
+        
+        // Generate mock chunk size data
+        const sizeData = [
+          { size: 100, count: 5 },
+          { size: 200, count: 12 },
+          { size: 300, count: 18 },
+          { size: 400, count: 23 },
+          { size: 500, count: 19 },
+          { size: 600, count: 14 },
+          { size: 700, count: 9 },
+          { size: 800, count: 5 },
+          { size: 900, count: 2 },
+          { size: 1000, count: 1 },
+        ];
+        setChunkSizeData(sizeData);
       } catch (error) {
         console.error("Failed to load bot metrics:", error);
       }
@@ -80,7 +97,8 @@ const Index = () => {
                 <Tabs defaultValue="chunks">
                   <TabsList className="mb-2">
                     <TabsTrigger value="chunks">Chunk Analysis</TabsTrigger>
-                    <TabsTrigger value="distribution">Score Distribution</TabsTrigger>
+                    <TabsTrigger value="metrics">Score Distribution</TabsTrigger>
+                    <TabsTrigger value="sizes">Size Distribution</TabsTrigger>
                   </TabsList>
                   <TabsContent value="chunks" className="mt-0">
                     <ChunkTable 
@@ -89,7 +107,7 @@ const Index = () => {
                       onSelectChunk={handleSelectChunk} 
                     />
                   </TabsContent>
-                  <TabsContent value="distribution" className="mt-0">
+                  <TabsContent value="metrics" className="mt-0">
                     {botMetrics ? (
                       <MetricHistogram botMetrics={botMetrics} />
                     ) : (
@@ -102,6 +120,9 @@ const Index = () => {
                       </Card>
                     )}
                   </TabsContent>
+                  <TabsContent value="sizes" className="mt-0">
+                    <ChunkSizeHistogram sizeData={chunkSizeData} />
+                  </TabsContent>
                 </Tabs>
               </div>
               
@@ -109,42 +130,11 @@ const Index = () => {
                 <ActionableInsights botId={selectedBot} />
               </div>
             </div>
-            
-            {selectedChunk && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <ChunkQualityChart chunk={selectedChunk} />
-                
-                <Card className="h-full">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Chunk Text Preview</CardTitle>
-                    <CardDescription>Content of the selected chunk</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="max-h-[300px] overflow-y-auto border rounded-md p-4 whitespace-pre-wrap text-sm bg-gray-50">
-                      {selectedChunk._source.text}
-                    </div>
-                    
-                    <div className="mt-4 space-y-3">
-                      <div>
-                        <h4 className="font-medium text-sm">Quality Analysis</h4>
-                        <div className="mt-2 space-y-2 text-sm text-gray-600">
-                          <p><strong>Complete:</strong> {selectedChunk._source.eval_metrics.complete_reason}</p>
-                          <p><strong>Noise:</strong> {selectedChunk._source.eval_metrics.noise_reason}</p>
-                          <p><strong>Context:</strong> {selectedChunk._source.eval_metrics.context_reason}</p>
-                          <p><strong>Substantive:</strong> {selectedChunk._source.eval_metrics.substantive_reason}</p>
-                          <p><strong>Coherent:</strong> {selectedChunk._source.eval_metrics.coherent_reason}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
           </>
         ) : (
           <div className="flex flex-col items-center justify-center h-[60vh]">
             <h2 className="text-xl font-bold mb-2">Welcome to RAG Chunk Visualizer</h2>
-            <p className="text-gray-500 mb-4">Please select a bot to begin analysis</p>
+            <p className="text-gray-500 mb-4">Please enter a bot ID to begin analysis</p>
           </div>
         )}
       </main>

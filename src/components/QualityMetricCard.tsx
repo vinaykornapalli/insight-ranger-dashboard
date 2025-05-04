@@ -14,7 +14,7 @@ interface QualityMetricCardProps {
 const QualityMetricCard = ({
   title,
   value,
-  maxValue = 1,
+  maxValue = 10,
   description,
   colorClass = "bg-rag-purple",
   iconComponent,
@@ -46,11 +46,12 @@ const QualityMetricCard = ({
           </div>
           <span className="text-sm font-medium text-gray-700">{percentage}%</span>
         </div>
-        <Progress
-          value={percentage}
-          className="h-2 mt-2"
-          indicatorClassName={progressColorClass}
-        />
+        <div className="mt-2">
+          <Progress
+            value={percentage}
+            className={`h-2 ${progressColorClass}`}
+          />
+        </div>
         {description && <p className="text-xs mt-2 text-gray-500">{description}</p>}
       </CardContent>
     </Card>

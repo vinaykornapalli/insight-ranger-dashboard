@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import QualityMetricCard from "./QualityMetricCard";
 import { BotMetrics } from "@/types";
 import { fetchBotMetrics } from "@/services/api";
+import { CircleGauge } from "lucide-react";
 
 interface MetricsOverviewProps {
   botId: string;
@@ -84,36 +85,46 @@ const MetricsOverview = ({ botId }: MetricsOverviewProps) => {
         <QualityMetricCard 
           title="Cohesiveness" 
           value={metrics.avgCohesive} 
+          maxValue={10}
           description="Average logical flow and organization of content" 
           colorClass="bg-rag-blue"
+          iconComponent={<CircleGauge className="h-5 w-5" />}
         />
         
         <QualityMetricCard 
           title="Substantiveness" 
           value={metrics.avgSubstantive} 
+          maxValue={10}
           description="Average information density and value" 
           colorClass="bg-rag-purple"
+          iconComponent={<CircleGauge className="h-5 w-5" />}
         />
         
         <QualityMetricCard 
           title="Contextual Sufficiency" 
           value={metrics.avgContextualSufficiency} 
+          maxValue={10}
           description="Self-contained understanding without external context" 
           colorClass="bg-rag-green"
+          iconComponent={<CircleGauge className="h-5 w-5" />}
         />
         
         <QualityMetricCard 
           title="Low Noise" 
           value={metrics.avgLowNoise} 
+          maxValue={10}
           description="Free from irrelevant or distracting content" 
           colorClass="bg-rag-yellow"
+          iconComponent={<CircleGauge className="h-5 w-5" />}
         />
         
         <QualityMetricCard 
           title="Completeness" 
           value={metrics.avgCompleteness} 
+          maxValue={10}
           description="Contains all necessary information for the topic" 
           colorClass="bg-rag-red"
+          iconComponent={<CircleGauge className="h-5 w-5" />}
         />
       </div>
     </div>

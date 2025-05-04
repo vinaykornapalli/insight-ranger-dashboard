@@ -1,16 +1,8 @@
 
 import { useState, useEffect } from "react";
-import { 
-  Radar, 
-  RadarChart, 
-  PolarGrid, 
-  PolarAngleAxis, 
-  ResponsiveContainer,
-  PolarRadiusAxis,
-  Tooltip
-} from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChunkDocument } from "@/types";
+import CircularMeter from "./CircularMeter";
 
 interface ChunkQualityChartProps {
   chunk: ChunkDocument;
@@ -66,30 +58,33 @@ const ChunkQualityChart = ({ chunk }: ChunkQualityChartProps) => {
       <CardHeader>
         <CardTitle className="text-lg">Chunk Quality Metrics</CardTitle>
         <CardDescription>
-          Radar chart showing the quality scores for selected chunk
+          Quality scores for selected chunk
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-              <PolarGrid stroke="#e5e7eb" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: '#6b7280', fontSize: 12 }} />
-              <PolarRadiusAxis angle={30} domain={[0, 10]} />
-              <Radar
-                name="Quality Score"
-                dataKey="score"
-                stroke="#7E69AB"
-                fill="#9b87f5"
-                fillOpacity={0.6}
-              />
-              <Tooltip />
-            </RadarChart>
-          </ResponsiveContainer>
+        <div className="flex flex-wrap justify-center gap-4">
+          {chartData.map((item) => (
+            <CircularMeter
+              key={item.subject}
+              value={item.score}
+              maxValue={10}
+              size={80}
+              color={
+                item.subject === 'Cohesion' ? '#0EA5E9' :
+                item.subject === 'Low Noise' ? '#eab308' :
+                item.subject === 'Completeness' ? '#ef4444' :
+                item.subject === 'Substantiveness' ? '#7E69AB' :
+                '#16a34a'
+              }
+              label={item.subject}
+            />
+          ))}
         </div>
-        <div className="mt-4 space-y-2 text-sm">
+        
+        <div className="mt-6 space-y-2 text-sm">
           <p className="font-medium">Selected Chunk: {chunk._id}</p>
           <p className="text-gray-500">Document: {chunk._source.doc_name}</p>
+          <p className="text-gray-500">Size: {(chunk._source.text.length / 1000).toFixed(1)}K characters</p>
           <p className="text-gray-500">Last Evaluated: {new Date(chunk._source.last_eval_time).toLocaleString()}</p>
         </div>
       </CardContent>
