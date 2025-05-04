@@ -1,10 +1,10 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import QualityMetricCard from "./QualityMetricCard";
 import { BotMetrics } from "@/types";
 import { fetchBotMetrics } from "@/services/api";
 import { CircleGauge } from "lucide-react";
+import CircularMeter from "./CircularMeter";
 
 interface MetricsOverviewProps {
   botId: string;
@@ -62,10 +62,20 @@ const MetricsOverview = ({ botId }: MetricsOverviewProps) => {
     );
   }
 
+  // Round the metric values to whole numbers for display
+  const roundedMetrics = {
+    ...metrics,
+    avgCohesive: Math.round(metrics.avgCohesive),
+    avgSubstantive: Math.round(metrics.avgSubstantive),
+    avgContextualSufficiency: Math.round(metrics.avgContextualSufficiency),
+    avgLowNoise: Math.round(metrics.avgLowNoise),
+    avgCompleteness: Math.round(metrics.avgCompleteness),
+  };
+
   return (
     <div className="mb-6">
       <h2 className="text-lg font-semibold mb-4">Bot Metrics Overview</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <div className="col-span-1">
           <Card className="h-full">
             <CardHeader className="pb-2">
@@ -82,50 +92,90 @@ const MetricsOverview = ({ botId }: MetricsOverviewProps) => {
           </Card>
         </div>
         
-        <QualityMetricCard 
-          title="Cohesiveness" 
-          value={metrics.avgCohesive} 
-          maxValue={10}
-          description="Average logical flow and organization of content" 
-          colorClass="bg-rag-blue"
-          iconComponent={<CircleGauge className="h-5 w-5" />}
-        />
+        <div className="col-span-1">
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-500">Cohesiveness</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center pt-4">
+              <CircularMeter 
+                value={roundedMetrics.avgCohesive} 
+                maxValue={10}
+                color="#7E69AB" 
+                label="Logical flow"
+                valueLabel={`${roundedMetrics.avgCohesive}`}
+              />
+            </CardContent>
+          </Card>
+        </div>
         
-        <QualityMetricCard 
-          title="Substantiveness" 
-          value={metrics.avgSubstantive} 
-          maxValue={10}
-          description="Average information density and value" 
-          colorClass="bg-rag-purple"
-          iconComponent={<CircleGauge className="h-5 w-5" />}
-        />
+        <div className="col-span-1">
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-500">Substantiveness</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center pt-4">
+              <CircularMeter 
+                value={roundedMetrics.avgSubstantive} 
+                maxValue={10}
+                color="#4C6FFF" 
+                label="Information density"
+                valueLabel={`${roundedMetrics.avgSubstantive}`}
+              />
+            </CardContent>
+          </Card>
+        </div>
         
-        <QualityMetricCard 
-          title="Contextual Sufficiency" 
-          value={metrics.avgContextualSufficiency} 
-          maxValue={10}
-          description="Self-contained understanding without external context" 
-          colorClass="bg-rag-green"
-          iconComponent={<CircleGauge className="h-5 w-5" />}
-        />
+        <div className="col-span-1">
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-500">Context Sufficiency</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center pt-4">
+              <CircularMeter 
+                value={roundedMetrics.avgContextualSufficiency} 
+                maxValue={10}
+                color="#10B981" 
+                label="Self-contained"
+                valueLabel={`${roundedMetrics.avgContextualSufficiency}`}
+              />
+            </CardContent>
+          </Card>
+        </div>
         
-        <QualityMetricCard 
-          title="Low Noise" 
-          value={metrics.avgLowNoise} 
-          maxValue={10}
-          description="Free from irrelevant or distracting content" 
-          colorClass="bg-rag-yellow"
-          iconComponent={<CircleGauge className="h-5 w-5" />}
-        />
+        <div className="col-span-1">
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-500">Low Noise</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center pt-4">
+              <CircularMeter 
+                value={roundedMetrics.avgLowNoise} 
+                maxValue={10}
+                color="#FBBF24" 
+                label="Relevance"
+                valueLabel={`${roundedMetrics.avgLowNoise}`}
+              />
+            </CardContent>
+          </Card>
+        </div>
         
-        <QualityMetricCard 
-          title="Completeness" 
-          value={metrics.avgCompleteness} 
-          maxValue={10}
-          description="Contains all necessary information for the topic" 
-          colorClass="bg-rag-red"
-          iconComponent={<CircleGauge className="h-5 w-5" />}
-        />
+        <div className="col-span-1">
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-500">Completeness</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center pt-4">
+              <CircularMeter 
+                value={roundedMetrics.avgCompleteness} 
+                maxValue={10}
+                color="#EF4444" 
+                label="Coverage"
+                valueLabel={`${roundedMetrics.avgCompleteness}`}
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

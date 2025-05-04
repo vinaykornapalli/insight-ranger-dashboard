@@ -15,8 +15,8 @@ interface CircularMeterProps {
 const CircularMeter: React.FC<CircularMeterProps> = ({
   value,
   maxValue = 10,
-  size = 100,
-  strokeWidth = 8,
+  size = 120,
+  strokeWidth = 10,
   color = "#7E69AB",
   backgroundColor = "#e6e6e6",
   label,
@@ -60,14 +60,14 @@ const CircularMeter: React.FC<CircularMeterProps> = ({
           y={center}
           textAnchor="middle"
           dy=".3em"
-          fontSize="1.2rem"
+          fontSize="1.8rem"
           fontWeight="bold"
           fill={color}
         >
-          {valueLabel || normalizedValue.toFixed(1)}
+          {valueLabel || normalizedValue}
         </text>
       </svg>
-      {label && <div className="text-xs text-gray-500 mt-1">{label}</div>}
+      {label && <div className="text-xs text-gray-500 mt-2">{label}</div>}
     </div>
   );
 };
